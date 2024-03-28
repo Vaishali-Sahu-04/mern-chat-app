@@ -1,6 +1,26 @@
-import React from 'react'
+import React, { useState } from 'react'
 import GenderCheckbox from './GenderCheckbox'
+import { Link } from 'react-router-dom';
+import useSignup from '../../hooks/useSignup';
+
  const SignUp = () => {
+
+	const [inputs, setInputs] = useState({
+		fullName: '',
+		username: '',
+		password: '',
+		cnfrmPassword: '',
+		gender: '',
+	})
+	const {loading, signup} = useSignup();
+
+	const handleCheckBoxChange = (gender) => {
+		setInputs({...inputs,gender})
+	}
+	const handleSubmit = async(e) => {
+		e.preventDefault();
+		await signup(inputs)
+	}
  	return (
  		<div className='flex flex-col items-center justify-center min-w-96 mx-auto'>
  			<div className='w-full p-6 rounded-lg shadow-md bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-lg bg-opacity-0'>
@@ -8,19 +28,23 @@ import GenderCheckbox from './GenderCheckbox'
  					Sign Up <span className='text-blue-500'> ChatApp</span>
  				</h1>
 
- 				<form>
+ 				<form onSubmit={handleSubmit}>
  					<div>
  						<label className='label p-2'>
  							<span className='text-base label-text text-white'>Full Name</span>
  						</label>
- 						<input type='text' placeholder='John Doe' className='w-full bg-black input input-bordered  h-10' />
+ 						<input type='text' placeholder='Enter Full Name' className='w-full text-gray-400 bg-black input input-bordered  h-10'
+							value={inputs.fullName}
+							onChange={(e)=>setInputs({...inputs, fullName:e.target.value})} />
  					</div>
 
  					<div>
  						<label className='label p-2 '>
  							<span className='text-base label-text text-white'>Username</span>
  						</label>
- 						<input type='text' placeholder='johndoe' className='w-full bg-black input input-bordered h-10' />
+ 						<input type='text' placeholder='Enter username' className='w-full text-gray-400 bg-black input input-bordered h-10' 
+						value={inputs.username}
+						onChange={(e)=>setInputs({...inputs, username:e.target.value})}/>
  					</div>
 
  					<div>
@@ -30,7 +54,9 @@ import GenderCheckbox from './GenderCheckbox'
  						<input
  							type='password'
  							placeholder='Enter Password'
- 							className='w-full input bg-black input-bordered h-10'
+ 							className='w-full input bg-black text-gray-400 input-bordered h-10'
+							 value={inputs.password}
+							 onChange={(e)=>setInputs({...inputs, password:e.target.value})}
  						/>
  					</div>
 
@@ -41,18 +67,23 @@ import GenderCheckbox from './GenderCheckbox'
  						<input
  							type='password'
  							placeholder='Confirm Password'
- 							className='w-full bg-black input input-bordered h-10'
+ 							className='w-full bg-black input text-gray-400 input-bordered h-10'
+							 value={inputs.cnfrmPassword}
+							 onChange={(e)=>setInputs({...inputs, cnfrmPassword:e.target.value})}
  						/>
  					</div>
 
- 					<GenderCheckbox />
+ 					<GenderCheckbox onCheckboxChange = {handleCheckBoxChange} selectedGender={inputs.gender} />
 
- 					<a className='text-sm text-white hover:underline hover:text-blue-600 mt-2 inline-block' href='#'>
+ 					<Link className='text-sm text-white hover:underline hover:text-blue-600 mt-2 inline-block' to='/login'>
  						Already have an account?
- 					</a>
+ 					</Link>
 
  					<div>
- 						<button className='btn bg-black text-gray-400 hover:text-black btn-block btn-sm mt-2 border border-slate-700'>Sign Up</button>
+ 						<button className='btn bg-black text-gray-400 hover:text-black btn-block btn-sm mt-2 border border-slate-700'
+						disabled={loading}>
+						{loading ? <span className='loading loading-spinner'></span> : "Sign Up"}
+						</button>
  					</div>
  				</form>
  			</div>

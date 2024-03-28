@@ -27,7 +27,7 @@ export const signup = async(req, res)=>{
             username,
             password: hashedPassword,
             gender,
-            profilePic:gender==="male" ? boyProfile : girlProfile,
+            profilePic:gender === "male" ? boyProfile : girlProfile,
         })
         if(newUser){
             //Generate JWT tooken
@@ -55,7 +55,6 @@ export const login = async(req, res)=>{
         const {username, password} = req.body;
         const user = await User.findOne({username});
         const isPassCorrect = await bcrypt.compare(password, user?.password || "");
-        console.log(isPassCorrect);
         if(!user || !isPassCorrect) 
         return res.status(400).json({error:"Invalid username or password"})
        
